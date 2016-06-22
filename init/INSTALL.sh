@@ -51,6 +51,19 @@ install_neobundle_vim() {
     bash <(curl -s https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh)
 }
 
+install_zsh_bin() {
+# BIN_PATH includes:
+# - directory
+# - files without extension
+#
+# BIN_PATH doesn't include:
+# - hidden files with prefix '.'
+  BIN_PATH="${DOTFILES_HOME}/zshrc.git/bin/**/*"
+  for bin_file in $BIN_PATH; do
+	ln -s ${bin_file} /usr/local/bin/
+  done
+}
+
 die_on_warning() {
     echo "WARNING: $1"
     exit 2
