@@ -4,10 +4,20 @@
 	ll = log --graph --decorate --all
 	# View the current working tree status using the short format
 	s = status -s
-	# Show the diff between the latest commit and the current state
-	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 	# `git di $number` shows the diff between the state `$number` revisions ago and the current state
 	di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+    # git diff HEAD~1
+	# Show the diff between the latest commit and the current state using Kaleidoscope
+    d = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD`;}; f"
+    # git diff HEAD~1
+	# Show the diff between the latest commit and the current state using Kaleidoscope
+    d1 = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD` `git symbolic-ref --short -q HEAD`~1; }; f"
+	# Show the diff between the latest commit and the current state using Kaleidoscope
+    d2 = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD` `git symbolic-ref --short -q HEAD`~2; }; f"
+	# Show the diff between the latest commit and the current state using Kaleidoscope
+    d3 = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD` `git symbolic-ref --short -q HEAD`~3; }; f"
+	# Show the diff between the latest commit and the current state using Kaleidoscope
+    d4 = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD` `git symbolic-ref --short -q HEAD`~4; }; f"
 	# Pull in remote changes for the current repository and all its submodules
 	p = !"git pull; git submodule foreach git pull origin master"
 	# Clone a repository including all submodules
@@ -37,6 +47,16 @@
 	# Remove branches that have already been merged with master
 	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 	unstage = reset HEAD --
+    # https://stackoverflow.com/questions/2517339/git-how-to-recover-the-file-permissions-git-thinks-the-file-should-be
+	permission-reset = !git diff -p -R --no-color | grep -E \"^(diff|(old|new) mode)\" --color=never | git apply
+	rescue = !git fsck --full --no-reflogs --unreachable --lost-found | grep commit | cut -d\\  -f3 | xargs -n 1 git log -n 1 --pretty=oneline > .git/lost-found.txt
+	# mergetool
+	mt = "!f() { git mergetool -y -t Kaleidoscope;}; f"
+	# difftool
+	dtt = "!f() { git difftool $1 $2 -y -t Kaleidoscope;}; f"
+	dt1 = "!f() { git difftool HEAD~1 HEAD -y -t Kaleidoscope;}; f"
+	dt = "!f() { git difftool HEAD -y -t Kaleidoscope;}; f"
+	up = pull --rebase --autostash
 
 [apply]
 	# Detect whitespace errors when applying a patch
@@ -58,28 +78,29 @@
 	safecrlf = false
 	autocrlf = false
 	filemode = false
+	ignorecase = false
 
 [color]
 	# Use colors in Git commands that are capable of colored output when
 	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
-	ui = auto
+    # ui = auto
 [color "branch"]
-	current = yellow reverse
+	current = yellow black 
 	local = yellow
-	remote = green
+	remote = magenta 
 [color "diff"]
-	meta = yellow bold
-	frag = magenta bold
+	plain = normal
+	meta = bold
+	frag = cyan
 	old = red bold
 	new = green bold
+	commit = yellow
+	whitespace = normal red
 [color "status"]
 	added = yellow
 	changed = green
-	untracked = cyan
-[merge]
-	# Include summaries of merged commits in newly created merge commit messages
-	log = true
-
+  untracked = cyan reverse
+  branch = magenta
 # URL shorthands
 [url "git@github.com:"]
 	insteadOf = "gh:"
@@ -99,12 +120,28 @@
 
 # TODO: change to the actual user
 [user]
-    name = Melvyn Kim 
-    email = melvynkim@gmail.com
-
+	name =  Melvyn Kim
+	email =  melvynkim@gmail.com
 [credential]
 	helper = osxkeychain
 [filter "media"]
 	required = true
 	clean = git media clean %f
 	smudge = git media smudge %f
+[commit]
+	template = ~/.stCommitMsg
+[diff]
+	tool = Kaleidoscope
+[difftool "Kaleidoscope"]
+	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[merge]
+	tool = Kaleidoscope
+[mergetool "Kaleidoscope"]
+	cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+	trustExitCode = true
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/develop/git/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
