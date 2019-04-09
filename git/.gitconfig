@@ -18,6 +18,8 @@
     d3 = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD` `git symbolic-ref --short -q HEAD`~3; }; f"
 	# Show the diff between the latest commit and the current state using Kaleidoscope
     d4 = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD` `git symbolic-ref --short -q HEAD`~4; }; f"
+	# Show the diff between the latest commit and the current state using Kaleidoscope
+    dc = "!f() { git difftool -y -t Kaleidoscope $1 $2; }; f $1 $2"
 	# Pull in remote changes for the current repository and all its submodules
 	p = !"git pull; git submodule foreach git pull origin master"
 	# Clone a repository including all submodules
@@ -129,7 +131,7 @@
 	clean = git media clean %f
 	smudge = git media smudge %f
 [commit]
-	template = ~/.stCommitMsg
+	# gpgsign = true
 [diff]
 	tool = Kaleidoscope
 [difftool "Kaleidoscope"]

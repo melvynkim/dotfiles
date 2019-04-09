@@ -156,7 +156,6 @@ reated by https://www.gitignore.io/api/android,osx,java,python,intellij,gradle,c
 *.class
 
 # Generated files
-bin/
 gen/
 
 # Gradle files
