@@ -51,7 +51,7 @@ add_symbolic_links() {
 install_neobundle_vim() {
     # install NeoBundle
     # https://github.com/Shougo/neobundle.vim
-    bash <(curl -s https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh)
+    $(curl -s https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh)
 }
 
 install_zsh_bin() {
