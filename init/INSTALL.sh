@@ -43,6 +43,9 @@ add_symbolic_links() {
     ln -s "${DOTFILES_HOME}/git/.gitignore_global" "${HOME}/.gitignore_global"
     ln -s "${DOTFILES_HOME}/git/.gitconfig" "${HOME}/.gitconfig"
     ln -s "${DOTFILES_HOME}/git/.gitattributes" "${HOME}/.gitattributes"
+
+		# zsh#spaceship-prompt
+		ln -s "${DOTFILES_HOME}/zshrc.git/spaceship-prompt/spaceship.zsh-theme" "${DOTFILES_HOME}/zshrc.git/ohmyzsh/themes/spaceship.zsh-theme"
 }
 
 install_neobundle_vim() {
