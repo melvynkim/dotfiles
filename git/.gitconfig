@@ -9,8 +9,8 @@
     # git diff HEAD~1
 	# Show the diff between the latest commit and the current state using Kaleidoscope
     d = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD`;}; f"
-    # git diff HEAD~1
-	# Show the diff between the latest commit and the current state using Kaleidoscope
+    # git diff H
+	# Show the diff betweEAD~1en the latest commit and the current state using Kaleidoscope
     d1 = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD` `git symbolic-ref --short -q HEAD`~1; }; f"
 	# Show the diff between the latest commit and the current state using Kaleidoscope
     d2 = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD` `git symbolic-ref --short -q HEAD`~2; }; f"
@@ -19,7 +19,7 @@
 	# Show the diff between the latest commit and the current state using Kaleidoscope
     d4 = "!f() { git difftool -y -t Kaleidoscope `git symbolic-ref --short -q HEAD` `git symbolic-ref --short -q HEAD`~4; }; f"
 	# Show the diff between the latest commit and the current state using Kaleidoscope
-    dc = "!f() { git difftool -y -t Kaleidoscope $1 $2; }; f $1 $2"
+    dd = "!f() { git difftool -y -t Kaleidoscope $1...$2; }; f $1 $2"
 	# Pull in remote changes for the current repository and all its submodules
 	p = !"git pull; git submodule foreach git pull origin master"
 	# Clone a repository including all submodules
