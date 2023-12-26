@@ -1,6 +1,6 @@
 #!/bin/sh
-export DOTFILES_HOME=""
 
+export DOTFILES_HOME="${HOME}/.dotfiles"
 
 check_requirements() {
     # Die if dotfiles directory exists
@@ -12,7 +12,8 @@ check_requirements() {
                 echo "Removing existing dotfiles directory.."
                 rm -rf "${DOTFILES_HOME}"
                 echo "Cloning dotfiles.."
-                wget --quiet --no-check-certificate https://raw.github.com/melvynkim/dotfiles/master/INSTALL.sh -O - | sh
+                clone_dotfiles
+                sh "${DOTFILES_HOME}/INSTALL.sh"
                 ;;
             [Nn]*)
                 die_on_warning "dotfiles not installed."
@@ -26,8 +27,11 @@ check_requirements() {
 
 clone_dotfiles() {
     echo "Cloning dotfiles to ${DOTFILES_HOME}.."
-    hash git >/dev/null 2>&1 && /usr/bin/env git clone --quiet --recursive "https://github.com/melvynkim/dotfiles" ${DOTFILES_HOME} || 
-    die "git is not installed."    
+    if hash git >/dev/null 2>&1; then
+        /usr/bin/env git clone --quiet --recursive git@github.com:melvynkim/dotfiles.git ${DOTFILES_HOME}
+    else
+        die "git is not installed."
+    fi    
 }
 
 add_symbolic_links() {
@@ -44,43 +48,43 @@ add_symbolic_links() {
     ln -s "${DOTFILES_HOME}/git/.gitconfig" "${HOME}/.gitconfig"
     ln -s "${DOTFILES_HOME}/git/.gitattributes" "${HOME}/.gitattributes"
 
-		# zsh#spaceship-prompt
-		ln -s "${DOTFILES_HOME}/zshrc.git/spaceship-prompt/spaceship.zsh-theme" "${DOTFILES_HOME}/zshrc.git/ohmyzsh/themes/spaceship.zsh-theme"
+    # spaceship-prompt for zsh
+    ln -s "${DOTFILES_HOME}/zshrc.git/spaceship-prompt/spaceship.zsh-theme" "${DOTFILES_HOME}/zshrc.git/ohmyzsh/themes/spaceship.zsh-theme"
 }
 
 install_neobundle_vim() {
-    # install NeoBundle
-    # https://github.com/Shougo/neobundle.vim
-    $(curl -s https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh)
+    # install NeoBundle for Vim
+    echo "Installing NeoBundle for Vim..."
+    if hash curl >/dev/null 2>&1; then
+        curl -s https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh | sh
+    else
+        die "curl is not installed."
+    fi
 }
 
 install_zsh_bin() {
-# BIN_PATH includes:
-# - directory
-# - files without extension
-#
-# BIN_PATH doesn't include:
-# - hidden files with prefix '.'
-  BIN_PATH="${DOTFILES_HOME}/zshrc.git/bin/**/*"
-  for bin_file in $BIN_PATH; do
-	ln -s ${bin_file} /usr/local/bin/
-  done
+    echo "Installing zsh bin..."
+    BIN_PATH="${DOTFILES_HOME}/zshrc.git/bin/**/*"
+    for bin_file in $BIN_PATH; do
+        if [ -f ${bin_file} ] && [ ! -d ${bin_file} ]; then
+            ln -s ${bin_file} /usr/local/bin/
+        fi
+    done
 }
 
 die_on_warning() {
     echo "WARNING: $1"
     exit 2
-    
 }
+
 die() {
     echo "ERROR: $1"
     echo "Report issues at http://github.com/melvynkim/dotfiles"
     exit 1
 }
 
-
-DOTFILES_HOME="${HOME}/.dotfiles"
 check_requirements
 clone_dotfiles
 add_symbolic_links
 install_neobundle_vim
+install_zsh_bin
