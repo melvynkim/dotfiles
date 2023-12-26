@@ -1,9 +1,9 @@
 [submodule "vimrc.git"]
 	path = vimrc.git
-	url = https://github.com/melvynkim/vimrc
+	url = git@github.com:melvynkim/vimrc.git
 [submodule "zsh.git/oh-my-zsh"]
 	path = zsh.git/oh-my-zsh
-	url = https://github.com/melvynkim/oh-my-zsh
+	url = git@github.com:melvynkim/oh-my-zsh.git
 [submodule "zshrc.git"]
 	path = zshrc.git
-	url = https://github.com/melvynkim/zshrc
+	url = git@github.com:melvynkim/zshrc.git
